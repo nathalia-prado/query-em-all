@@ -6,6 +6,7 @@ export default function PokemonDetail() {
   const { name } = useParams()
 
   const { data: pokemon, isLoading, error } = useQuery(['fetchPokemonByName'], () => fetchPokemonByName(name || ''))
+  console.log(pokemon)
 
   if (error instanceof Error) {
     return <p>Something went wrong: {error.message}</p>
@@ -37,6 +38,14 @@ export default function PokemonDetail() {
         {pokemon.moves.map(({ move }) => (
           <p key={move.name}>{move.name}</p>
         ))}
+      </section>
+      <section>
+        <h2>Base Experience: </h2>
+        <p>{pokemon.base_experience}</p>
+      </section>
+      <section>
+        <h2>Weight: </h2>
+        <p>{pokemon.weight}</p>
       </section>
     </div>
   )
