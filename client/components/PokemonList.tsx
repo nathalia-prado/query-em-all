@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { fetchPokemonGeneration } from '../apis/pokemon.ts'
 
 import { useQuery } from '@tanstack/react-query'
@@ -20,9 +21,9 @@ export default function PokemonList() {
       <h2>Pokémon in {generation.region}:</h2>
       <ul>
         {generation.pokemon.map((p) => (
-          <li key={p.id}>{p.name}</li>
+          <li key={p.id}><Link to={`/pokemon/${p.name}`}>{p.name}</Link></li>
         ))}
-      </ul>
+      </ul>      
     </>
   )
 }
