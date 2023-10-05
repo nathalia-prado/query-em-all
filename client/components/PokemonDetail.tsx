@@ -1,8 +1,20 @@
 import { useParams } from 'react-router-dom'
-import { Pokemon } from '../../models/pokemon.ts'
+import { fetchPokemonByName } from '../apis/pokemon.ts'
+import { useQuery } from '@tanstack/react-query'
 
 export default function PokemonDetail() {
   const { name } = useParams()
+
+  const { data: pokemon, isLoading, error } = useQuery(['fetchPokemonByName'], () => fetchPokemonByName(name || ''))
+  console.log(pokemon)
+
+  if (error instanceof Error) {
+    return <p>Something went wrong: {error.message}</p>
+  }
+
+  if (!pokemon || isLoading) {
+    return <p>Still loading Pokemon</p>
+  }
 
   return (
     <div>
@@ -27,65 +39,16 @@ export default function PokemonDetail() {
           <p key={move.name}>{move.name}</p>
         ))}
       </section>
+      <section>
+        <h2>Base Experience: </h2>
+        <p>{pokemon.base_experience}</p>
+      </section>
+      <section>
+        <h2>Weight: </h2>
+        <p>{pokemon.weight}</p>
+      </section>
     </div>
   )
 }
 
-const pokemon: Pokemon = {
-  id: 1,
-  name: 'bulbasaur',
-  sprites: {
-    front_default:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
-    back_default:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/1.png',
-  },
-  abilities: [
-    {
-      ability: {
-        name: 'overgrow',
-        url: 'https://pokeapi.co/api/v2/ability/65/',
-      },
-      is_hidden: false,
-      slot: 1,
-    },
-    {
-      ability: {
-        name: 'chlorophyll',
-        url: 'https://pokeapi.co/api/v2/ability/34/',
-      },
-      is_hidden: true,
-      slot: 3,
-    },
-  ],
-  moves: [
-    {
-      move: {
-        name: 'razor-wind',
-        url: 'https://pokeapi.co/api/v2/move/13/',
-      },
-    },
-    {
-      move: {
-        name: 'swords-dance',
-        url: 'https://pokeapi.co/api/v2/move/14/',
-      },
-    },
-  ],
-  types: [
-    {
-      slot: 0,
-      type: {
-        name: 'grass',
-        url: 'https://pokeapi.co/api/v2/type/12/',
-      },
-    },
-    {
-      slot: 1,
-      type: {
-        name: 'poison',
-        url: 'https://pokeapi.co/api/v2/type/4/',
-      },
-    },
-  ],
-}
+

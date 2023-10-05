@@ -1,8 +1,19 @@
+import { Link } from 'react-router-dom'
+import { fetchPokemonGeneration } from '../apis/pokemon.ts'
+
+import { useQuery } from '@tanstack/react-query'
+
 export default function PokemonList() {
-  const generation = {
-    name: 'generation-i',
-    region: 'Kanto',
-    pokemon: [{ id: 1, name: 'Bulbasaur' }],
+
+
+  const { data: generation, isLoading, error } = useQuery(['pokemonGeneration'], () => fetchPokemonGeneration(1))
+
+  if (error instanceof Error) {
+    return <p>Something went wrong: {error.message}</p>
+  }
+
+  if (!generation || isLoading) {
+    return <p>Still loading Pokemon</p>
   }
 
   return (
@@ -10,9 +21,9 @@ export default function PokemonList() {
       <h2>Pokémon in {generation.region}:</h2>
       <ul>
         {generation.pokemon.map((p) => (
-          <li key={p.id}>{p.name}</li>
+          <li key={p.id}><Link to={`/pokemon/${p.name}`}>{p.name}</Link></li>
         ))}
-      </ul>
+      </ul>      
     </>
   )
 }
